@@ -1,0 +1,23 @@
+{
+  "name": "budget-ui",
+  "version": "1.0.0",
+  "flat": true,
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "author": "",
+  "license": "SEE LICENSE IN LICENSE.md",
+  "dependencies": {
+    "@polymer/app-layout": "https://github.com/PolymerElements/app-layout.git#3.0-preview",
+    "@polymer/iron-icons": "https://github.com/PolymerElements/iron-icons.git#3.0-preview",
+    "@polymer/iron-selector": "https://github.com/PolymerElements/iron-selector.git#3.0-preview",
+    "@polymer/paper-icon-button": "https://github.com/PolymerElements/paper-icon-button.git#3.0-preview",
+    "@polymer/polymer": "next",
+    "page.js": "^4.13.3"
+  },
+  "devDependencies": {
+    "express": "^4.15.4"
+  }
+}

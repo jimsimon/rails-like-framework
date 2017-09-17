@@ -1,0 +1,8 @@
+{
+  "name": "budget-app",
+  "private": true,
+  "workspaces": [
+    "api",
+    "orm"
+  ]
+}
