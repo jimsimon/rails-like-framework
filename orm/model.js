@@ -1,15 +1,16 @@
+const HasMany = require('./associations/has-many')
 const QueryBuilder = require('./builders/query-builder')
 const pool = require('./pool')
 
 module.exports = class Model {
 
   constructor () {
-    if (this.constructor.hasManyAssociations) {
-      for (const model of this.constructor.hasManyAssociations) {
-        this[`get${model.name}`] = async function () {
-          return model.findAll({
+    if (this.constructor.associations) {
+      for (const {OtherModel, getterName, referenceId} of this.constructor.associations) {
+        this[getterName] = async function () {
+          return OtherModel.findAll({
             where: {
-              [`${this.constructor.name.toLowerCase()}Id`]: this.id
+              [referenceId]: this.id
             }
           })
         }
@@ -120,11 +121,12 @@ module.exports = class Model {
 
   }
 
-  static hasMany (model) {
-    if (!this.hasManyAssociations) {
-      this.hasManyAssociations = []
+  static hasMany (OtherModel, options) {
+    if (!this.associations) {
+      this.associations = []
     }
-    this.hasManyAssociations.push(model)
+    const association = new HasMany(this, OtherModel, options)
+    this.associations.push(association)
   }
 
   _getPropertyValues (properties) {
