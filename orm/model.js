@@ -2,6 +2,21 @@ const QueryBuilder = require('./builders/query-builder')
 const pool = require('./pool')
 
 module.exports = class Model {
+
+  constructor () {
+    if (this.constructor.hasManyAssociations) {
+      for (const model of this.constructor.hasManyAssociations) {
+        this[`get${model.name}`] = async function () {
+          return model.findAll({
+            where: {
+              [`${this.constructor.name.toLowerCase()}Id`]: this.id
+            }
+          })
+        }
+      }
+    }
+  }
+
   static get properties () {
     throw new Error(`No properties have been defined for ${this.tableName}`)
   }
@@ -14,11 +29,16 @@ module.exports = class Model {
     return this.constructor.tableName
   }
 
-  static async findAll () {
+  static async findAll ({where} = {}) {
     const columns = ['id', 'createdAt', 'updatedAt', ...this.properties]
-    const sql = new QueryBuilder().select(columns).from(this.tableName).build()
+    const builder = new QueryBuilder().select(columns).from(this.tableName)
+    if (where) {
+      builder.where(where)
+    }
+    const sql = builder.build()
     console.log(sql)
-    const dbResult = await pool.query(sql)
+    const whereValues = where ? Object.values(where) : []
+    const dbResult = await pool.query(sql, whereValues)
     const models = []
     for (const row of dbResult.rows) {
       const model = new this()
@@ -86,6 +106,25 @@ module.exports = class Model {
     // TODO: Decide whether to delete createdAt and updatedAt properties
     delete this.id
     return this
+  }
+
+  static belongsTo (model) {
+
+  }
+
+  static belongsToMany (model) {
+
+  }
+
+  static hasOne (model) {
+
+  }
+
+  static hasMany (model) {
+    if (!this.hasManyAssociations) {
+      this.hasManyAssociations = []
+    }
+    this.hasManyAssociations.push(model)
   }
 
   _getPropertyValues (properties) {
