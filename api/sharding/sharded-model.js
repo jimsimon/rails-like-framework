@@ -1,5 +1,5 @@
 const {Model} = require('sequelize')
-const {getNamespace} = require('continuation-local-storage')
+const {getNamespace} = require('cls-hooked')
 
 module.exports = class ShardedModel extends Model {
   static bulkCreate (records, options) {

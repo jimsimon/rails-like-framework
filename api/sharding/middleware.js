@@ -1,4 +1,4 @@
-const { createNamespace } = require('continuation-local-storage')
+const { createNamespace } = require('cls-hooked')
 const shardingNamespace = createNamespace('sharding')
 
 // Patch bluebird to ensure cls context isn't lost

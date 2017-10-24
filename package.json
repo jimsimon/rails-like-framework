@@ -3,6 +3,6 @@
   "private": true,
   "workspaces": [
     "api",
-    "orm"
+    "pg-activerecord"
   ]
 }

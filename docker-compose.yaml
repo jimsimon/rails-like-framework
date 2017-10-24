@@ -12,6 +12,7 @@ services:
       context: api
     volumes:
       - ./api:/usr/src/app
+      - ./node_modules:/usr/src/app/node_modules
     environment:
       - NODE_ENV=development
     depends_on:

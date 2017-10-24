@@ -6,8 +6,9 @@ WORKDIR /usr/src/app
 
 COPY ./ ./
 
-RUN npm install --production
+RUN npm install -g yarn
+RUN yarn install --production
 
 EXPOSE 3000
 
-CMD npm start
+CMD yarn start
