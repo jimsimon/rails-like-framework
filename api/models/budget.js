@@ -1,14 +1,10 @@
 const ShardedModel = require('../sharding/sharded-model')
-const {DataTypes: {STRING}} = require('sequelize')
+const CategoryGroup = require('./category-group')
 
 module.exports = class Budget extends ShardedModel {
-  static get fields () {
-    return {
-      label: STRING
-    }
-  }
-
-  static associate ({CategoryGroup}) {
-    Budget.hasMany(CategoryGroup)
+  static get properties () {
+    return ['label']
   }
 }
+
+Budget.hasMany(CategoryGroup)
