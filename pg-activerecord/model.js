@@ -1,18 +1,14 @@
+const BelongsTo = require('./associations/belongs-to')
 const HasMany = require('./associations/has-many')
 const pool = require('./pool')
 const knex = require('knex')({client: 'pg'})
 
 module.exports = class Model {
-
   constructor () {
     if (this.constructor.associations) {
-      for (const {OtherModel, getterName, referenceId} of this.constructor.associations) {
-        this[getterName] = function () {
-          return OtherModel.findAll({
-            where: {
-              [referenceId]: this.id
-            }
-          })
+      for (const association of this.constructor.associations) {
+        this[association.getterName] = function () {
+          return association.action(this)
         }
       }
     }
@@ -36,10 +32,10 @@ module.exports = class Model {
     if (where) {
       builder.where(where)
     }
+
     const {sql: knexSql, bindings} = builder.toSQL()
-    const sql = this._fixKnexSql(knexSql)
-    console.log(sql)
-    const dbResult = await pool.query(sql, bindings)
+    const dbResult = await this._executeQuery(knexSql, bindings)
+
     const models = []
     for (const row of dbResult.rows) {
       const model = new this()
@@ -49,6 +45,24 @@ module.exports = class Model {
       models.push(model)
     }
     return models
+  }
+
+  static async findOne ({where} = {}) {
+    const columns = ['id', 'createdAt', 'updatedAt', ...this.properties]
+    const builder = knex.select(columns).from(this.tableName)
+    if (where) {
+      builder.where(where)
+    }
+
+    const {sql: knexSql, bindings} = builder.limit(1).toSQL()
+    const dbResult = await this._executeQuery(knexSql, bindings)
+
+    const row = dbResult.rows[0]
+    const model = new this()
+    for (const column of columns) {
+      model[column] = row[column.toLowerCase()]
+    }
+    return model
   }
 
   async save () {
@@ -68,9 +82,7 @@ module.exports = class Model {
       .where({'id': this.id})
       .returning(['updatedAt'])
       .toSQL()
-    const sql = Model._fixKnexSql(knexSql)
-    console.log(sql)
-    const result = await pool.query(sql, bindings)
+    const result = await Model._executeQuery(knexSql, bindings)
     const row = result.rows[0]
     Object.assign(this, row)
     return this
@@ -87,10 +99,8 @@ module.exports = class Model {
       .insert(propertyValueMap)
       .returning(['id', 'createdAt', 'updatedAt'])
       .toSQL()
-    const sql = Model._fixKnexSql(knexSql)
 
-    console.log(sql)
-    const result = await pool.query(sql, bindings)
+    const result = await Model._executeQuery(knexSql, bindings)
     const row = result.rows[0]
     Object.assign(this, row)
     return this
@@ -101,22 +111,26 @@ module.exports = class Model {
       .where({'id': this.id})
       .delete()
       .toSQL()
-    const sql = Model._fixKnexSql(knexSql)
-    await pool.query(sql, bindings)
+
+    await Model._executeQuery(knexSql, bindings)
     // TODO: Decide whether to delete createdAt and updatedAt properties
     delete this.id
     return this
   }
 
-  static belongsTo (model) {
+  static belongsTo (OtherModel, options) {
+    if (!this.associations) {
+      this.associations = []
+    }
+    const association = new BelongsTo(this, OtherModel, options)
+    this.associations.push(association)
+  }
+
+  static belongsToMany (OtherModel, options) {
 
   }
 
-  static belongsToMany (model) {
-
-  }
-
-  static hasOne (model) {
+  static hasOne (OtherModel) {
 
   }
 
@@ -128,12 +142,13 @@ module.exports = class Model {
     this.associations.push(association)
   }
 
-  _getPropertyValues (properties) {
-    const values = []
-    for (const property of properties) {
-      values.push(this[property])
-    }
-    return values
+  isNew () {
+    return this.id === undefined || this.id === null
+  }
+
+  toJSON () {
+    const map = this._getPropertyValueMap(this.constructor.properties)
+    return JSON.stringify(map)
   }
 
   _getPropertyValueMap (properties) {
@@ -144,9 +159,19 @@ module.exports = class Model {
     return map
   }
 
-  isNew() {
-    return this.id === undefined || this.id === null
+  static async _executeQuery (knexSql, bindings) {
+    const sql = this._fixKnexSql(knexSql)
+    console.log(sql)
+    const client = await pool.connect()
+    try {
+      await this.beforeExecuteQuery(client)
+      return await client.query(sql, bindings)
+    } finally {
+      client.release()
+    }
   }
+
+  static async beforeExecuteQuery () {}
 
   static _fixKnexSql (sql) {
     let fixedSql = Model._fixPlaceholders(sql)

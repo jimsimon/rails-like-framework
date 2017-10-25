@@ -1,4 +1,4 @@
-module.exports = class HasMany {
+module.exports = class BelongsTo {
   constructor (TargetModel, OtherModel, options = {}) {
     this.TargetModel = TargetModel
     this.OtherModel = OtherModel
@@ -6,7 +6,7 @@ module.exports = class HasMany {
   }
 
   get referenceId () {
-    return this.options.through || `${this.TargetModel.tableName.toLowerCase()}Id`
+    return this.options.through || `${this.OtherModel.tableName.toLowerCase()}Id`
   }
 
   get getterName () {
@@ -14,9 +14,9 @@ module.exports = class HasMany {
   }
 
   action (instance) {
-    return this.OtherModel.findAll({
+    return this.OtherModel.findOne({
       where: {
-        [this.referenceId]: instance.id
+        id: instance[this.referenceId]
       }
     })
   }
