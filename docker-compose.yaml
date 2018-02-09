@@ -9,9 +9,9 @@ services:
       - NODE_ENV=development
   api:
     build:
-      context: api
+      context: packages/api
     volumes:
-      - ./api:/usr/src/app
+      - ./packages/api:/usr/src/app
       - ./node_modules:/usr/src/app/node_modules
     environment:
       - NODE_ENV=development
@@ -22,7 +22,7 @@ services:
     ports:
       - "5432:5432"
     environment:
-      - POSTGRES_DB=cordcutting
+      - POSTGRES_DB=budgetapp
   proxy:
     build:
       context: proxy

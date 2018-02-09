@@ -1,0 +1,10 @@
+{
+  "name": "pg-activerecord-test",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "private": true,
+  "dependencies": {
+    "pg-activerecord": "^1.0.0"
+  }
+}

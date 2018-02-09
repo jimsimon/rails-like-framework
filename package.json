@@ -1,8 +1,10 @@
 {
-  "name": "budget-app",
+  "name": "rails-like-framework",
   "private": true,
   "workspaces": [
-    "api",
-    "pg-activerecord"
-  ]
+    "packages/*"
+  ],
+  "devDependencies": {
+    "lerna": "^2.8.0"
+  }
 }
