@@ -1,4 +1,4 @@
-const ShardedModel = require('../sharding/sharded-model')
+const ShardedModel = require('../../mvc/sharding/sharded-model')
 
 module.exports = class CategoryGroup extends ShardedModel {
   static get properties () {

@@ -1,4 +1,4 @@
-const ShardedModel = require('../sharding/sharded-model')
+const ShardedModel = require('../../mvc/sharding/sharded-model')
 
 module.exports = class Budget extends ShardedModel {
   static get properties () {
