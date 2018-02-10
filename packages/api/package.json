@@ -18,6 +18,7 @@
     "express-promise-router": "^2.0.0",
     "invalidate-module": "^1.0.0",
     "morgan": "^1.8.2",
+    "mvc": "^1.0.0",
     "pg": "^7.3.0",
     "pg-activerecord": "^1.0.0",
     "pg-escape": "^0.2.0",

@@ -1,0 +1,20 @@
+{
+  "name": "mvc",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "private": true,
+  "bin": {
+    "mvc": "./index.js"
+  },
+  "dependencies": {
+    "body-parser": "^1.18.2",
+    "compression": "^1.7.1",
+    "express": "^4.16.2",
+    "express-force-ssl": "^0.3.2",
+    "glob": "^7.1.2",
+    "humps": "^2.0.1",
+    "morgan": "^1.9.0",
+    "utils": "^1.0.0"
+  }
+}

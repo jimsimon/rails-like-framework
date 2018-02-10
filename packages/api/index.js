@@ -2,7 +2,7 @@ const chokidar = require('chokidar')
 const invalidate = require('invalidate-module')
 const path = require('path')
 
-let server = require('./app')
+let server = require('../mvc/app')
 
 // Watch for file changes and reload the server
 chokidar.watch('.', {
@@ -16,7 +16,7 @@ chokidar.watch('.', {
   server.close(() => {
     console.log('Starting new server')
     try {
-      server = require('./app')
+      server = require('../mvc/app')
     } catch (e) {
       console.error(e)
     }
