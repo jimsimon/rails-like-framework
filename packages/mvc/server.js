@@ -1,6 +1,6 @@
 const path = require('path')
 const express = require('express')
-const shardingMiddleware = require('../pg-activerecord/sharding/middleware')
+const shardingMiddleware = require('pg-activerecord/sharding/middleware')
 const bodyParser = require('body-parser')
 const morgan = require('morgan')
 const compression = require('compression')
@@ -73,66 +73,19 @@ const vm = require('vm')
 const fs = require('fs')
 const code = fs.readFileSync(path.join(cwd, 'config', 'routes.js'), 'utf8')
 
-const humps = require('humps')
-class RouterBuilder {
-  constructor (globals) {
-    this.router = express.Router()
-    this.globals = globals
-  }
 
-  resources (controllerName) {
-    this.get(`/${controllerName}`, controllerName, 'index')
-    this.post(`/${controllerName}`, controllerName, 'create')
-    this.get(`/${controllerName}/:id`, controllerName, 'show')
-    this.put(`/${controllerName}/:id`, controllerName, 'update')
-    this.patch(`/${controllerName}/:id`, controllerName, 'update')
-    this.delete(`/${controllerName}/:id`, controllerName, 'destroy')
-  }
+const globalManager = require('./utils/global-manager-singleton')
+console.log(globalManager.context)
 
-  get (path, controllerName, controllerFunction) {
-    this._setupRoute('get', path, controllerName, controllerFunction)
-  }
-
-  put (path, controllerName, controllerFunction) {
-    this._setupRoute('put', path, controllerName, controllerFunction)
-  }
-
-  post (path, controllerName, controllerFunction) {
-    this._setupRoute('post', path, controllerName, controllerFunction)
-  }
-
-  delete (path, controllerName, controllerFunction) {
-    this._setupRoute('delete', path, controllerName, controllerFunction)
-  }
-
-  patch (path, controllerName, controllerFunction) {
-    this._setupRoute('patch', path, controllerName, controllerFunction)
-  }
-
-  _setupRoute (verb, path, controllerName, controllerFunction) {
-    const className = `${humps.pascalize(controllerName)}Controller`
-    const globals = this.globals
-    this.router[verb](path, function (...params) {
-      const controller = new globals[className]()
-      return controller[controllerFunction](...params)
-    })
-  }
-}
-
-const glob = require('glob')
-const controllers = glob.sync('controllers/**/*-controller.js')
-const models = glob.sync('models/**/*.js')
-const globals = [].concat(controllers).concat(models).reduce(function (globals, file) {
-  const clazz = require(path.join(cwd, file.substring(0, file.length-3)))
-  globals[clazz.name] = clazz
-  return globals
-}, {})
-
-console.log(globals)
-const routerBuilder = new RouterBuilder(globals)
+const RouterBuilder = require('./utils/router-builder')
+const routerBuilder = new RouterBuilder(globalManager.context)
 vm.runInNewContext(code, {resources: routerBuilder.resources.bind(routerBuilder)})
 
-app.use(routerBuilder.router)
+if (env === 'development') {
+  app.use(routerBuilder.router)
+} else {
+  app.use(forceSSL, routerBuilder.router)
+}
 
 try {
   module.exports = app.listen(3000, function () {
