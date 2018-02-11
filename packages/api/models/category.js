@@ -1,4 +1,4 @@
-const ShardedModel = require('../../pg-activerecord/sharding/sharded-model')
+const ShardedModel = require('pg-activerecord/sharding/sharded-model')
 
 module.exports = class Category extends ShardedModel {
   static get properties () {
