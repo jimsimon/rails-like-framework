@@ -1,0 +1,10 @@
+const fs = require('fs')
+const path = require('path')
+const cwd = process.cwd()
+
+fs.mkdirSync(path.join(cwd, 'config'))
+fs.copyFileSync(path.join(__dirname, '..', 'config', 'rlf.config.js'), path.join(cwd, 'config', 'rlf.config.js'))
+fs.copyFileSync(path.join(__dirname, '..', 'config', 'database.config.js'), path.join(cwd, 'config', 'database.config.js'))
+fs.writeFileSync(path.join(cwd,'config','routes.js'), '')
+fs.mkdirSync(path.join(cwd, 'controllers'))
+fs.mkdirSync(path.join(cwd, 'models'))

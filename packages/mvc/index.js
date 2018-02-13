@@ -7,15 +7,21 @@ program
   .version(version)
 
 program
+  .command('init')
+  .action(function () {
+    return ('./commands/init')
+  })
+
+program
   .command('server')
   .action(function () {
-    require('./server')
+    require('./commands/server')
   })
 
 program
   .command('console')
   .action(function () {
-    require('./console')
+    require('./commands/console')
   })
 
 

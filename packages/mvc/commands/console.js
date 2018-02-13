@@ -1,5 +1,5 @@
 const repl = require("repl")
-const globalManager = require('./utils/global-manager-singleton')
+const globalManager = require('../utils/global-manager-singleton')
 
 // const {createNamespace} = require('cls-hooked')
 // const shardingNamespace = createNamespace('sharding')

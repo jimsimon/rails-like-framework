@@ -74,10 +74,10 @@ const fs = require('fs')
 const code = fs.readFileSync(path.join(cwd, 'config', 'routes.js'), 'utf8')
 
 
-const globalManager = require('./utils/global-manager-singleton')
+const globalManager = require('../utils/global-manager-singleton')
 console.log(globalManager.context)
 
-const RouterBuilder = require('./utils/router-builder')
+const RouterBuilder = require('../utils/router-builder')
 const routerBuilder = new RouterBuilder(globalManager.context)
 vm.runInNewContext(code, {resources: routerBuilder.resources.bind(routerBuilder)})
 
