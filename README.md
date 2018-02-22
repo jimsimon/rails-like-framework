@@ -3,6 +3,20 @@
 A framework loosely based on the simplicity and ease of use of Ruby on
 Rails, but without the performance cost.
 
+## Current Features
+* A simple DSL for defining routes
+* A standardized file system layout
+* All classes defined in the standard file system layout available as globals
+* A console for easy researching and debugging
+* An ActiveRecord library for easy and simple model definitions
+
+### Planned Features
+* Built-in process clustering
+* Built-in hot reloading while in development mode
+* Built-in server management tools
+* Built-in feature flagging system
+* Built-in sharding support
+
 ## Getting Started
 
 Simply install this package via your favorite package manager:
@@ -65,4 +79,8 @@ Production:
 | port | process.env.port | The port the database is expecting connections on |
 | database | myapp | The database to connect to |
 
-## CLI API
+## CLI
+For a list of the available cli commands, simply execute the following command:
+```
+rlf --help
+```
