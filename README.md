@@ -92,7 +92,9 @@ pascal-case.  For example, calling `resources('accounts')` will wire up all stan
 to `AccountsController`.
 
 The standard routes are as follows (using `'accounts'` as an example):
+
 | Method | Route | Controller Function | Purpose |
+| ------ | ----- | ------------------- | ------- |
 | GET | /accounts | AccountsController.index | List all accounts |
 | POST | /accounts | AccountsController.create | Create a new account |
 | GET | /accounts/:id | AccountsController.show | Get a specific account |
