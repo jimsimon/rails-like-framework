@@ -79,6 +79,45 @@ Production:
 | port | process.env.port | The port the database is expecting connections on |
 | database | myapp | The database to connect to |
 
+## Routing
+Routes are defined in `<project root>/config/routes.js` using the following API:
+
+### resources(name)
+Parameters:
+* name - the identifier to use when wiring up the controller
+
+The `resources` function wires up the following routes to a controller class defined in
+the standard controllers directory named `<name>Controller` with name being converted to
+pascal-case.  For example, calling `resources('accounts')` will wire up all standard routes
+to `AccountsController`.
+
+The standard routes are as follows (using `'accounts'` as an example):
+| Method | Route | Controller Function | Purpose |
+| GET | /accounts | AccountsController.index | List all accounts |
+| POST | /accounts | AccountsController.create | Create a new account |
+| GET | /accounts/:id | AccountsController.show | Get a specific account |
+| PUT | /accounts/:id | AccountsController.replace | Replace a specific account |
+| PATCH | /accounts/:id | AccountsController.amend | Amend (partial update) a specific account |
+| DELETE | /accounts/:id | AccountsController.destroy | Update a specific account |
+
+### get|post|patch|put|delete(path, name, function)
+Parameters:
+* path - the path to respond to
+* name - the identifier to use when wiring up the controller
+* function - the controller function to call when the route is reached
+
+Examples:
+
+Routes a `GET` request to `/users/:id` to `AuthenticatedUsersController.getAuthUser`
+```
+get('/users/:id', 'authenticated-users', 'getAuthUser')
+```
+
+Routes a `PUT` request to `/addresses` to `AddressesController.replaceAll`
+```
+put('/addresses', 'addresses', 'replaceAll')
+```
+
 ## CLI
 For a list of the available cli commands, simply execute the following command:
 ```
