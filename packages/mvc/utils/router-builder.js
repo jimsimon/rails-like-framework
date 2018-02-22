@@ -11,8 +11,8 @@ class RouterBuilder {
     this.get(`/${controllerName}`, controllerName, 'index')
     this.post(`/${controllerName}`, controllerName, 'create')
     this.get(`/${controllerName}/:id`, controllerName, 'show')
-    this.put(`/${controllerName}/:id`, controllerName, 'update')
-    this.patch(`/${controllerName}/:id`, controllerName, 'update')
+    this.put(`/${controllerName}/:id`, controllerName, 'replace')
+    this.patch(`/${controllerName}/:id`, controllerName, 'amend')
     this.delete(`/${controllerName}/:id`, controllerName, 'destroy')
   }
 
